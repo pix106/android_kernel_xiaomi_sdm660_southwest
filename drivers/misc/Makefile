@@ -68,6 +68,7 @@ obj-$(CONFIG_QPNP_MISC) 	+= qpnp-misc.o
 obj-$(CONFIG_FORCE_FAST_CHARGE) += fastchg.o
 obj-$(CONFIG_MEMORY_STATE_TIME) += memory_state_time.o
 obj-$(CONFIG_HQ_HARDWARE_INFO) += hqhardwareinfo/
+obj-$(CONFIG_BATTERY_SAVER)	+= battery_saver.o
 
 # TODO: remove me b/62057517
 subdir-ccflags-y += \
