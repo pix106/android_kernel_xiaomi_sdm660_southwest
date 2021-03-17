@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2017, The Linux Foundation. All rights reserved.
+ * Copyright (c) 2016-2017, 2020, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -193,7 +193,8 @@
 #define FG_RR_ADC_STS_CHANNEL_READING_MASK	0x3
 #define FG_RR_ADC_STS_CHANNEL_STS		0x2
 
-#define FG_RR_CONV_CONTINUOUS_TIME_MIN_MS	50
+#define FG_RR_CONV_CONTINUOUS_TIME_MIN_MS       50
+#define FG_RR_CONV_CONT_CBK_TIME_MIN_MS	10
 #define FG_RR_CONV_MAX_RETRY_CNT		50
 #define FG_RR_TP_REV_VERSION1		21
 #define FG_RR_TP_REV_VERSION2		29
@@ -693,7 +694,7 @@ static const struct rradc_channels rradc_chans[] = {
 #ifdef CONFIG_MACH_XIAOMI_TULIP
 static bool rradc_is_batt_psy_available(struct rradc_chip *chip)
 {
-if (!chip->batt_psy)
+	if (!chip->batt_psy)
 		chip->batt_psy = power_supply_get_by_name("battery");
 
 	if (!chip->batt_psy)
@@ -713,6 +714,7 @@ static bool rradc_is_bms_psy_available(struct rradc_chip *chip)
 	return true;
 }
 #endif
+
 static int rradc_enable_continuous_mode(struct rradc_chip *chip)
 {
 	int rc = 0;
@@ -785,6 +787,7 @@ static int rradc_check_status_ready_with_retry(struct rradc_chip *chip,
 #ifdef CONFIG_MACH_XIAOMI_TULIP
 	union power_supply_propval pval = {0, };
 #endif
+
 	switch (prop->channel) {
 	case RR_ADC_BATT_ID:
 		/* BATT_ID STS bit does not get set initially */
@@ -811,6 +814,7 @@ static int rradc_check_status_ready_with_retry(struct rradc_chip *chip,
 		}
 
 		msleep(FG_RR_CONV_CONTINUOUS_TIME_MIN_MS);
+
 		retry_cnt++;
 		rc = rradc_read(chip, status, buf, 1);
 		if (rc < 0) {
@@ -818,6 +822,7 @@ static int rradc_check_status_ready_with_retry(struct rradc_chip *chip,
 			return rc;
 		}
 	}
+
 #ifdef CONFIG_MACH_XIAOMI_TULIP
 	if ((retry_cnt >= FG_RR_CONV_MAX_RETRY_CNT) &&
 		((prop->channel != RR_ADC_DCIN_V) ||
@@ -843,6 +848,7 @@ static int rradc_check_status_ready_with_retry(struct rradc_chip *chip,
 	if (retry_cnt >= FG_RR_CONV_MAX_RETRY_CNT)
 		rc = -ENODATA;
 #endif
+
 	return rc;
 }
 
@@ -1187,6 +1193,7 @@ static int rradc_psy_notifier_cb(struct notifier_block *nb,
 	return NOTIFY_OK;
 }
 #endif
+
 static const struct iio_info rradc_info = {
 	.read_raw	= &rradc_read_raw,
 	.driver_module	= THIS_MODULE,

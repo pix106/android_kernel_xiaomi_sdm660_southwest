@@ -4303,6 +4303,7 @@ unlock:
 		return rc;
 }
 #endif
+
 static int fg_psy_set_property(struct power_supply *psy,
 				  enum power_supply_property psp,
 				  const union power_supply_propval *pval)
