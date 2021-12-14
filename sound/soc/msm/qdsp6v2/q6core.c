@@ -375,7 +375,7 @@ struct cal_block_data *cal_utils_get_cal_block_by_key(
 	return NULL;
 }
 
-#ifndef CONFIG_MACH_XIAOMI_MSM8998
+#ifndef CONFIG_SND_SOC_SDM660_COMMON
 static int q6core_send_get_avcs_fwk_ver_cmd(void)
 {
 	struct apr_hdr avcs_ver_cmd;
